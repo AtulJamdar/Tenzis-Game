@@ -5,24 +5,6 @@ import Confetti from "react-confetti"
 
 export default function App() {
     const [dice, setDice] = useState(() => generateAllNewDice())
-    
-    /**
-     * Challenge:
-     * Make it so when the game is over, the "New Game" button
-     * automatically receives keyboard focus so keyboard users
-     * can easily trigger that button without having to tab
-     * through all the dice first.
-     * 
-     * Hints:
-     * 1. Focusing a DOM element with the DOMNode.focus() method
-     *    requires accessing the native DOM node. What tool have
-     *    we learned about that allows us to do that?
-     * 
-     * 2. Automatically calling the .focus() on a DOM element when
-     *    the game is won requires us to synchronize the local
-     *    `gameWon` variable with an external system (the DOM). What
-     *    tool have we learned about that allows us to do that?
-     */
 
     const gameWon = dice.every(die => die.isHeld) &&
         dice.every(die => die.value === dice[0].value)
@@ -31,13 +13,12 @@ export default function App() {
         return new Array(10)
             .fill(0)
             .map(() => ({
-                // value: Math.ceil(Math.random() * 6),
-                value: 5,
+                value: Math.ceil(Math.random() * 6),
                 isHeld: false,
                 id: nanoid()
             }))
     }
-    
+
     function rollDice() {
         if (!gameWon) {
             setDice(oldDice => oldDice.map(die =>
@@ -69,7 +50,11 @@ export default function App() {
 
     return (
         <main>
-            {gameWon && <Confetti />}
+            {gameWon &&
+                <Confetti
+                    recycle={false}
+                    numberOfPieces={1000} />
+            }
             <div aria-live="polite" className="sr-only">
                 {gameWon && <p>Congratulations! You won! Press "New Game" to start again.</p>}
             </div>
